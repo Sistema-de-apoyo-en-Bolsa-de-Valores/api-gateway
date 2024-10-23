@@ -1,0 +1,20 @@
+server:
+  port: 8085
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: micro1
+          uri: http://localhost:8084/
+          predicates:
+            - Path=/user-management/**
+          filters:
+            - RewritePath=/user-management/(?<segment>.*), /$\{segment}
+        - id: micro2
+          uri: http://localhost:8000/
+          predicates:
+            - Path=/analyzers-sentiment/**
+          filters:
+            - RewritePath=/analyzers-sentiment/(?<segment>.*), /$\{segment}
+  application:
+    name: gateway
