@@ -1,20 +1,29 @@
 server:
-  port: 8085
+  port: 8080
 spring:
+  application:
+    name: api-gateway
+
   cloud:
     gateway:
       routes:
-        - id: micro1
-          uri: http://localhost:8084/
+        - id: stock-prediction-api
+          uri: http://localhost:8081
           predicates:
-            - Path=/user-management/**
-          filters:
-            - RewritePath=/user-management/(?<segment>.*), /$\{segment}
-        - id: micro2
-          uri: http://localhost:8000/
+            - Path=/stock/**
+        - id: sentiment-news_analysis-api
+          uri: http://localhost:8082
           predicates:
-            - Path=/analyzers-sentiment/**
-          filters:
-            - RewritePath=/analyzers-sentiment/(?<segment>.*), /$\{segment}
-  application:
-    name: gateway
+            - Path=/news/**
+        - id: stock-purchase-api
+          uri: http://localhost:8083
+          predicates:
+            - Path=/order/**
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+jwt:
+  secret: 3cfa76ef14937c1c0ea519f8fc057a80fcd04a7420f8e8bcd0a7567c272e007b
+
+user-mgmt-api:
+  base-url: http://localhost:8084
+  path: /user
